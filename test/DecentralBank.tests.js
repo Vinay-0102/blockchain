@@ -1,5 +1,4 @@
 // const { assert } = require("console");
-const { cursorTo } = require("readline");
 const { default: Web3 } = require("web3");
 
 const Tether = artifacts.require("Tether");
@@ -105,18 +104,21 @@ contract("DecentralBank", (accounts) => {
       await tether.approve(decentralBank.address, tokens("1000"), {
         from: accounts[1],
       });
-    
-      
-      // await decentralBank.depositTokens("10",{from:accounts[0]});
-      // custo_balance = await tether.balanceOf(accounts[1]);
-      // console.log(custo_balance);
-      // assert.equal(custo_balance.toString(),"10");
+      await decentralBank.depositTokens(tokens("1000"), { from: accounts[1] });
+      custo_balance = await tether.balanceOf(accounts[1]);
+      assert.equal(custo_balance.toString(), tokens("0"));
 
-      // let custo_rwd = await rwd.balanceOf(accounts[1]);
-      // assert.equal(custo_rwd.toString(), tokens("100"));
+      let custo_rwd = await rwd.balanceOf(accounts[1]);
+      assert.equal(custo_rwd.toString(), tokens("100"));
 
-      
+      // *****************************************************************************************
 
+      await rwd.approve(decentralBank.address, tokens("20"), {
+        from: accounts[1],
+      });
+      await decentralBank.spendReward(tokens("20"), { from: accounts[1] });
+      let _rem_rewards = await rwd.balanceOf(accounts[1]);
+      assert.equal(_rem_rewards.toString(), tokens("80"));
       // await tether.transfer(accounts[1], tokens("100"), { from: accounts[0] });
 
       // await decentralBank.depositTokens(tokens("100"), { from: accounts[1] });

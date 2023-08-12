@@ -5,8 +5,8 @@ pragma solidity >=0.4.22 <0.9.0;
 import "./RWD.sol";
 import "./Tether.sol";
 
-contract DecentralBank {
-    string public name = "Decentral Bank";
+contract Seller {
+    string public name = "Seller";
     address public owner;
     Tether public tether;
     RWD public rwd;
@@ -46,24 +46,12 @@ contract DecentralBank {
 
         // // reward assignment
         uint coins_alloted = (_amount / 10);
-        
-       // rwd.approve( msg.sender, coins_alloted);
-        rwd.transfer(msg.sender,coins_alloted);
-       
+        // f(amount)
+        rwd.transfer(msg.sender, coins_alloted); // (_to => customer ) // supplier
     }
 
-    // // take the deposited money form bank account to myaccount
-    // function buy( uint units ) public {
-    //    //customer uses this coins to buy the product from seller
-    //    // let me assume that all products are of cost 10
-    //    uint rwd_req = units * 10;
-    //     rwd.approve( msg.sender , rwd_req , {from : address(this)});
-    //    rwd.TransferFrom( msg.sender, address(this) , rwd_req);
-    // //    (msg.sender, rwd_req);
-    //     // now sent sucessfully 
-    //     // need to be tested
+    // take the deposited money form bank account to myaccount
 
-    // }
     function unstakeTokens() public {
         uint balance = stakingBalance[msg.sender];
         require(balance > 0, "staking balance cannot be less than zero");
@@ -88,4 +76,9 @@ contract DecentralBank {
     //         }
     //     }
     // }
+
+    function spendReward(uint reward_tokens) public {
+        require(reward_tokens > 0, "reward tokens cannot be 0");
+        rwd.TransferFrom(msg.sender, address(this), reward_tokens);
+    }
 }
