@@ -3,22 +3,22 @@ const { default: Web3 } = require("web3");
 
 const Tether = artifacts.require("Tether");
 const RWD = artifacts.require("RWD");
-const DecentralBank = artifacts.require("DecentralBank");
+const Seller = artifacts.require("Seller");
 
 require("chai").use(require("chai-as-promised")).should();
 
-contract("DecentralBank", (accounts) => {
+contract("Seller", (accounts) => {
   function tokens(number) {
     return web3.utils.toWei(number, "ether");
   }
-  describe("DecentralBank Deployment", async () => {
+  describe("Seller Deployment", async () => {
     it("Matches name successfully", async () => {
       let tether = await Tether.new();
       let rwd = await RWD.new();
-      let decentralBank = await DecentralBank.new(rwd.address, tether.address);
+      let seller = await Seller.new(rwd.address, tether.address);
 
       // transfer 1 million rewards to central bank
-      await rwd.transfer(decentralBank.address, tokens("100000"));
+      await rwd.transfer(seller.address, tokens("100000"));
       // give customer some 100 tethers to buy something
       // account[0] => admin
       // account[1] => customer
@@ -91,20 +91,20 @@ contract("DecentralBank", (accounts) => {
       let result;
       let tether = await Tether.new();
       let rwd = await RWD.new();
-      let decentralBank = await DecentralBank.new(rwd.address, tether.address);
+      let seller = await Seller.new(rwd.address, tether.address);
 
-      await rwd.transfer(decentralBank.address, tokens("100000"));
-      let bank_reward = await rwd.balanceOf(decentralBank.address);
+      await rwd.transfer(seller.address, tokens("100000"));
+      let bank_reward = await rwd.balanceOf(seller.address);
       assert.equal(bank_reward.toString(), tokens("100000"));
 
       await tether.transfer(accounts[1], tokens("1000"), { from: accounts[0] });
       let custo_balance = await tether.balanceOf(accounts[1]);
       assert.equal(custo_balance.toString(), tokens("1000"));
 
-      await tether.approve(decentralBank.address, tokens("1000"), {
+      await tether.approve(seller.address, tokens("1000"), {
         from: accounts[1],
       });
-      await decentralBank.depositTokens(tokens("1000"), { from: accounts[1] });
+      await seller.depositTokens(tokens("1000"), { from: accounts[1] });
       custo_balance = await tether.balanceOf(accounts[1]);
       assert.equal(custo_balance.toString(), tokens("0"));
 
@@ -113,10 +113,10 @@ contract("DecentralBank", (accounts) => {
 
       // *****************************************************************************************
 
-      await rwd.approve(decentralBank.address, tokens("20"), {
+      await rwd.approve(seller.address, tokens("20"), {
         from: accounts[1],
       });
-      await decentralBank.spendReward(tokens("20"), { from: accounts[1] });
+      await seller.spendReward(tokens("20"), { from: accounts[1] });
       let _rem_rewards = await rwd.balanceOf(accounts[1]);
       assert.equal(_rem_rewards.toString(), tokens("80"));
       // await tether.transfer(accounts[1], tokens("100"), { from: accounts[0] });
