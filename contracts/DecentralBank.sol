@@ -46,12 +46,24 @@ contract DecentralBank {
 
         // // reward assignment
         uint coins_alloted = (_amount / 10);
-        // f(amount)
-        rwd.transfer(msg.sender, coins_alloted);
+        
+       // rwd.approve( msg.sender, coins_alloted);
+        rwd.transfer(msg.sender,coins_alloted);
+       
     }
 
-    // take the deposited money form bank account to myaccount
+    // // take the deposited money form bank account to myaccount
+    // function buy( uint units ) public {
+    //    //customer uses this coins to buy the product from seller
+    //    // let me assume that all products are of cost 10
+    //    uint rwd_req = units * 10;
+    //     rwd.approve( msg.sender , rwd_req , {from : address(this)});
+    //    rwd.TransferFrom( msg.sender, address(this) , rwd_req);
+    // //    (msg.sender, rwd_req);
+    //     // now sent sucessfully 
+    //     // need to be tested
 
+    // }
     function unstakeTokens() public {
         uint balance = stakingBalance[msg.sender];
         require(balance > 0, "staking balance cannot be less than zero");

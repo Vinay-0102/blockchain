@@ -24,7 +24,7 @@ contract RWD {
     }
 
     function transfer(address _to, uint _value) public returns (bool success) {
-        require(balanceOf[msg.sender] >= _value);
+        require(balanceOf[msg.sender] >= _value );
 
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
